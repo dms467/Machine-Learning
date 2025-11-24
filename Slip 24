@@ -1,0 +1,38 @@
+**SLIP 24_1**
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+
+url = "https://archive.ics.uci.edu/ml/machine-learning-databases/00267/data_banknote_authentication.txt"
+cols = ['Variance', 'Skewness', 'Curtosis', 'Entropy', 'Class']
+data = pd.read_csv(url, names=cols)
+
+X = data.drop('Class', axis=1)
+y = data['Class']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+model = DecisionTreeClassifier(random_state=0)
+model.fit(X_train, y_train)
+print("Accuracy:", round(accuracy_score(y_test, model.predict(X_test)),2))
+
+
+**SLIP 24_2**
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
+
+data = pd.read_csv(r"C:\Users\Dell\Downloads\UniversalBank.csv")
+data = data.drop(['ID','ZIP Code'], axis=1, errors='ignore')
+
+X = data.drop('Personal Loan', axis=1)
+y = data['Personal Loan']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+X_train = StandardScaler().fit_transform(X_train)
+X_test = StandardScaler().fit(X_train).transform(X_test)
+
+model = SVC(kernel='linear').fit(X_train, y_train)
+print("Accuracy:", model.score(X_test, y_test))
