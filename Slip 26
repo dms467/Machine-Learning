@@ -1,0 +1,53 @@
+**SLIP 26_1**
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+import matplotlib.pyplot as plt
+
+# Load data
+df = pd.read_csv("pima_diabetes.csv")
+X = df.drop("Outcome", axis=1)
+y = df["Outcome"]
+
+# Train–test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+# Find best K (1 to 20)
+acc_list = []
+for k in range(1, 21):
+    knn = KNeighborsClassifier(k).fit(X_train, y_train)
+    acc_list.append(accuracy_score(y_test, knn.predict(X_test)))
+
+best_k = acc_list.index(max(acc_list)) + 1
+print("Best K:", best_k)
+print("Best Accuracy:", round(max(acc_list), 4))
+
+# Plot elbow method
+plt.plot(range(1, 21), acc_list, marker='o')
+plt.xlabel("K")
+plt.ylabel("Accuracy")
+plt.title("Elbow Method to Find Best K")
+plt.show()
+
+# Final model
+model = KNeighborsClassifier(best_k).fit(X_train, y_train)
+
+# Predict new patient
+sample = [[5,116,74,0,0,25.6,0.201,30]]  # Example patient
+print("Prediction (1=Diabetic, 0=Not):", model.predict(sample)[0])
+
+
+**SLIP 26_2**
+from mlxtend.frequent_patterns import apriori, association_rules
+import pandas as pd
+
+data = [['milk','bread','butter'],
+        ['bread','butter'],
+        ['milk','bread'],
+        ['milk','bread','butter']]
+df = pd.DataFrame(data, columns=['I1','I2','I3'])
+df = pd.get_dummies(df.stack()).groupby(level=0).sum()
+frequent = apriori(df, min_support=0.25, use_colnames=True)
+rules = association_rules(frequent)
+print(rules[['antecedents','consequents','support']])
