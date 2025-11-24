@@ -1,0 +1,24 @@
+**SLIP2_1**
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+df = pd.read_csv(r'C:\Users\Dell\Downloads\archive (14)\Housing.csv')
+df
+df = df.dropna()
+df
+x = df[['area']]
+y = df['price']
+model = LinearRegression().fit(x, y)
+print("Predicted Price:", round(model.predict([[2000]])[0], 2))
+
+
+**SLIP2_2**
+import pandas as pd
+from sklearn.cluster import AgglomerativeClustering
+df = pd.read_csv(r'C:\Users\Dell\Downloads\archive (15)\Wholesale customers data.csv')
+df
+x = df.iloc[:, 2:]  # selecting annual spending columns
+model = AgglomerativeClustering(n_clusters=3)
+df['Cluster'] = model.fit_predict(x)
+df[['Region','Fresh','Milk','Grocery','Frozen','Detergents_Paper','Delicassen','Cluster']]
+df['Annual_Spending'] = df[['Fresh','Milk','Grocery','Frozen','Detergents_Paper','Delicassen']].sum(axis=1)
+df[['Region','Annual_Spending']]
