@@ -1,0 +1,74 @@
+**SLIP 29_1**
+from sklearn.datasets import load_iris
+from sklearn.decomposition import PCA
+from sklearn.svm import SVC
+from sklearn.model_selection import train_test_split
+
+# Load Iris dataset
+iris = load_iris()
+X, y = iris.data, iris.target
+
+# Reduce 4D → 2D using PCA
+pca = PCA(n_components=2)
+X2 = pca.fit_transform(X)
+
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(X2, y, test_size=0.2, random_state=0)
+
+# Train classifier on reduced data
+model = SVC(kernel='rbf')
+model.fit(X_train, y_train)
+
+print("Model accuracy:", round(model.score(X_test, y_test), 4))
+
+# Predict new flower (enter 4 measurements)
+sample = [[5.1, 3.5, 1.4, 0.2]]   # example input
+sample2D = pca.transform(sample)
+
+pred = model.predict(sample2D)[0]
+print("Predicted flower:", iris.target_names[pred])
+
+
+**SLIP 29_2**
+import pandas as pd
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+import matplotlib.pyplot as plt
+
+# Load dataset
+df = pd.read_csv("employees.csv")
+
+# Preprocess
+df = df.dropna()                 # remove missing values
+X = df[["Income"]]               # use income column only (as required)
+
+# Elbow Method
+wcss = []
+K = range(2, 10)
+for k in K:
+    km = KMeans(n_clusters=k, random_state=0)
+    km.fit(X)
+    wcss.append(km.inertia_)
+
+plt.plot(K, wcss, marker='o')
+plt.title("Elbow Method")
+plt.xlabel("k")
+plt.ylabel("WCSS")
+plt.show()
+
+# Silhouette Score to find the best k
+for k in K:
+    km = KMeans(n_clusters=k, random_state=0).fit(X)
+    score = silhouette_score(X, km.labels_)
+    print(f"k={k}, Silhouette Score={score:.4f}")
+
+# Final model with chosen k (example: k=3)
+model = KMeans(n_clusters=3, random_state=0)
+df["Cluster"] = model.fit_predict(X)
+
+print("\nFinal Cluster Centers:")
+print(model.cluster_centers_)
+
+print("\nClustered Data:")
+print(df.head())
+
