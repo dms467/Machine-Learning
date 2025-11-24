@@ -1,0 +1,56 @@
+**SLIP 8_1**
+from sklearn.datasets import fetch_20newsgroups
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score
+
+data = fetch_20newsgroups(subset='train')
+test_data = fetch_20newsgroups(subset='test')
+
+vectorizer = CountVectorizer(stop_words='english')
+X_train = vectorizer.fit_transform(data.data)
+X_test = vectorizer.transform(test_data.data)
+
+model = MultinomialNB()
+model.fit(X_train, data.target)
+y_pred = model.predict(X_test)
+
+print("Accuracy:", round(accuracy_score(test_data.target, y_pred) * 100, 2), "%")
+
+sample = ["Apple releases a new version of the iPhone with AI features."]
+pred = model.predict(vectorizer.transform(sample))
+print("\nPredicted Category:", data.target_names[pred[0]])
+
+
+**SLIP 8_2**
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+
+df = pd.DataFrame({
+    'Outlook': ['Sunny','Overcast','Rain','Sunny','Rain'],
+    'Temperature': ['Hot','Mild','Cool','Mild','Hot'],
+    'Humidity': ['High','Normal','High','Normal','High'],
+    'Windy': ['False','True','False','True','False'],
+    'PlayTennis': [0,1,1,1,0]
+})
+
+X = pd.get_dummies(df[['Outlook','Temperature','Humidity','Windy']], drop_first=False)
+y = df['PlayTennis']
+feature_names = X.columns
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+model = DecisionTreeClassifier().fit(X_train, y_train)
+
+sample = pd.DataFrame({
+    'Outlook': ['Rain'],
+    'Temperature': ['Mild'],
+    'Humidity': ['Normal'],
+    'Windy': ['False']
+})
+
+sample_encoded = pd.get_dummies(sample, drop_first=False)
+sample_encoded = sample_encoded.reindex(columns=feature_names, fill_value=0)
+
+pred = model.predict(sample_encoded)[0]
+print("Prediction ->", "✅ Play Tennis" if pred else "❌ Don't Play Tennis")
