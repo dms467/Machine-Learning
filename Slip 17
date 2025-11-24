@@ -1,0 +1,34 @@
+**SLIP 17_1**
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, VotingClassifier, StackingClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+import warnings
+warnings.filterwarnings("ignore")
+
+d = pd.read_csv(r"C:\Users\Dell\Downloads\archive (21)\diabetes.csv")
+X = d.drop('Outcome', axis=1)
+y = d['Outcome']
+Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=0.2, random_state=0)
+
+rf = RandomForestClassifier()
+ab = AdaBoostClassifier()
+vc = VotingClassifier([('rf', rf), ('ab', ab), ('lr', LogisticRegression())], voting='hard')
+sc = StackingClassifier([('rf', rf), ('ab', ab)], final_estimator=LogisticRegression())
+
+for n, m in {'Bagging': rf, 'Boosting': ab, 'Voting': vc, 'Stacking': sc}.items():
+    m.fit(Xtr, ytr)
+    print(n, "Accuracy:", round(accuracy_score(yte, m.predict(Xte))*100, 2), "%")
+
+
+**SLIP 17_2**
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+df = pd.read_csv(r'C:\Users\Dell\Downloads\archive (14)\Housing.csv')
+x = df[['area','bedrooms','bathrooms']]
+y = df['price']
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
+model = LinearRegression().fit(x_train, y_train)
+print("Predicted Price:", round(model.predict([[2000,3,2]])[0],2))
