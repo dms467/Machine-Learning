@@ -1,0 +1,40 @@
+**SLIP 9_1**
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import Ridge, Lasso
+data = pd.read_csv(r"C:\Users\Dell\Downloads\archive (17)\HousingData.csv")
+data
+X = data[['RM']]
+y = data['MEDV']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+ridge = Ridge(alpha=1.0)
+ridge.fit(X_train, y_train)
+ridge_pred = ridge.predict([[5]])
+
+lasso = Lasso(alpha=0.1)
+lasso.fit(X_train, y_train)
+lasso_pred = lasso.predict([[5]])
+
+print(f"Predicted Price (Ridge) for 5 rooms: {ridge_pred[0]:.2f}")
+print(f"Predicted Price (Lasso) for 5 rooms: {lasso_pred[0]:.2f}")
+
+
+**SLIP 9_2**
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
+
+data = pd.read_csv(r"C:\Users\Dell\Downloads\UniversalBank.csv")
+data = data.drop(['ID','ZIP Code'], axis=1, errors='ignore')
+
+X = data.drop('Personal Loan', axis=1)
+y = data['Personal Loan']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+X_train = StandardScaler().fit_transform(X_train)
+X_test = StandardScaler().fit(X_train).transform(X_test)
+
+model = SVC(kernel='linear').fit(X_train, y_train)
+print("Accuracy:", model.score(X_test, y_test))
