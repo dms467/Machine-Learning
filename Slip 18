@@ -1,0 +1,36 @@
+**SLIP 18_1**
+import pandas as pd
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+
+data = pd.read_csv(r"C:\Users\Dell\Downloads\archive (21)\diabetes.csv")
+
+X = data.drop('Outcome', axis=1)
+
+kmeans = KMeans(n_clusters=2, random_state=0)
+data['Cluster'] = kmeans.fit_predict(X)
+
+print(data[['Cluster', 'Outcome']].value_counts())
+plt.scatter(X['Glucose'], X['BMI'], c=data['Cluster'])
+plt.xlabel('Glucose')
+plt.ylabel('BMI')
+plt.title('K-Means Clustering on Diabetes Data')
+plt.show()
+
+
+**SLIP 18_2**
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
+
+data = pd.read_csv(r"C:\Users\Dell\Downloads\archive (19)\Position_Salaries.csv")
+
+X = data[['Level']]
+y = data['Salary']
+
+poly = PolynomialFeatures(degree=4)
+X_poly = poly.fit_transform(X)
+model = LinearRegression().fit(X_poly, y)
+
+print("Level 11 Salary:", round(model.predict(poly.transform([[11]]))[0], 2))
+print("Level 12 Salary:", round(model.predict(poly.transform([[12]]))[0], 2))
