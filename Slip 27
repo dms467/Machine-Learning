@@ -1,0 +1,45 @@
+**SLIP 27_1**
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+
+df = pd.read_csv(r'C:\Users\Dell\Downloads\archive (14)\Housing.csv')
+x = df[['area','bedrooms','bathrooms']]
+y = df['price']
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
+model = LinearRegression().fit(x_train, y_train)
+print("Predicted Price:", round(model.predict([[2000,3,2]])[0],2))
+
+
+**SLIP 27_2**
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.metrics import r2_score
+
+# Load dataset
+data = pd.read_csv(r"C:\Users\Dell\Downloads\archive (19)\Position_Salaries.csv")
+X = data[['Level']]
+y = data['Salary']
+
+# Simple Linear Regression
+lin = LinearRegression()
+lin.fit(X, y)
+y_pred_lin = lin.predict(X)
+
+# Polynomial Regression (degree=3)
+poly = PolynomialFeatures(degree=3)
+X_poly = poly.fit_transform(X)
+lin_poly = LinearRegression()
+lin_poly.fit(X_poly, y)
+y_pred_poly = lin_poly.predict(X_poly)
+
+# Compare accuracy
+print("Linear R²:", round(r2_score(y, y_pred_lin), 2))
+print("Polynomial R²:", round(r2_score(y, y_pred_poly), 2))
+
+# Predict for Level 11 & 12
+print("Predicted Salary (Linear, L11):", round(lin.predict([[11]])[0], 2))
+print("Predicted Salary (Linear, L12):", round(lin.predict([[12]])[0], 2))
+print("Predicted Salary (Polynomial, L11):", round(lin_poly.predict(poly.transform([[11]]))[0], 2))
+print("Predicted Salary (Polynomial, L12):", round(lin_poly.predict(poly.transform([[12]]))[0], 2))
