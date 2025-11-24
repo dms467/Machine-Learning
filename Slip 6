@@ -1,0 +1,37 @@
+**SLIP 6_1**
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+import numpy as np
+import pandas as pd
+df = pd.read_csv(r'C:\Users\Dell\Downloads\archive (17)\HousingData.csv')
+df
+x = df[['RM', 'LSTAT']].dropna()
+y = df['MEDV'].loc[x.index]   
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
+poly = PolynomialFeatures(degree=2)
+x_train_poly = poly.fit_transform(x_train)
+x_test_poly = poly.transform(x_test)
+model = LinearRegression().fit(x_train_poly, y_train)
+print("Predicted Price:", round(model.predict([x_test_poly[0]])[0], 2))
+
+
+**SLIP 6_2**
+import pandas as pd
+from sklearn.cluster import KMeans
+df = pd.read_csv(r'C:\Users\Dell\Downloads\archive (18)\Employee_Salary_Dataset.csv')
+df
+df = df.dropna()
+x = df[['Age','Salary']]
+model = KMeans(n_clusters=3, random_state=0).fit(x)
+df['Cluster'] = model.labels_
+df[['ID','Age','Salary','Cluster']]
+
+import matplotlib.pyplot as plt
+plt.figure(figsize=(8, 5))
+plt.scatter(df['Age'], df['Salary'], c=df['Cluster'], cmap='viridis', s=60)
+plt.title('Employee Income Clusters')
+plt.xlabel('Age')
+plt.ylabel('Salary')
+plt.colorbar(label='Cluster')
+plt.show()
