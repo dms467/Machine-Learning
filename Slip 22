@@ -1,0 +1,27 @@
+**SLIP 22_1**
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+df = pd.read_csv(r'C:\Users\Dell\Downloads\archive (14)\Housing.csv')
+df
+df = df.dropna()
+df
+x = df[['area']]
+y = df['price']
+model = LinearRegression().fit(x, y)
+print("Predicted Price:", round(model.predict([[2000]])[0], 2))
+
+
+**SLIP 22_2**
+from mlxtend.frequent_patterns import apriori, association_rules
+import pandas as pd
+
+data = [['milk','bread','butter'],
+        ['bread','butter'],
+        ['milk','bread'],
+        ['milk','bread','butter']]
+df = pd.DataFrame(data, columns=['I1','I2','I3'])
+df = pd.get_dummies(df.stack()).groupby(level=0).sum()
+frequent = apriori(df, min_support=0.25, use_colnames=True)
+rules = association_rules(frequent)
+print(rules[['antecedents','consequents','support']])
