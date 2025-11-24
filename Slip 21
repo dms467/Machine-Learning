@@ -1,0 +1,32 @@
+**SLIP 21_1**
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+
+df = pd.read_csv(r'C:\Users\Dell\Downloads\archive (14)\Housing.csv')
+x = df[['area','bedrooms','bathrooms']]
+y = df['price']
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
+model = LinearRegression().fit(x_train, y_train)
+print("Predicted Price:", round(model.predict([[2000,3,2]])[0],2))
+
+
+**SLIP 21_2**
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
+
+data = pd.read_csv(r"C:\Users\Dell\Downloads\UniversalBank.csv")
+data = data.drop(['ID','ZIP Code'], axis=1, errors='ignore')
+
+X = data.drop('Personal Loan', axis=1)
+y = data['Personal Loan']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+X_train = StandardScaler().fit_transform(X_train)
+X_test = StandardScaler().fit(X_train).transform(X_test)
+
+model = SVC(kernel='linear').fit(X_train, y_train)
+print("Accuracy:", model.score(X_test, y_test))
