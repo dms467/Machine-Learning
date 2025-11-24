@@ -13,3 +13,14 @@ df.head()
 
 
 **SLIP 10_2**
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+
+data = load_iris()
+df = pd.DataFrame(data.data, columns=data.feature_names)
+df['target'] = data.target
+plt.scatter(df.iloc[:,0], df.iloc[:,1], c=df['target'])
+plt.xlabel('Sepal Length')
+plt.ylabel('Sepal Width')
+plt.show()
