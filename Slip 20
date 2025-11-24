@@ -1,0 +1,56 @@
+**SLIP 20_1**
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import Ridge, Lasso
+
+data = pd.read_csv(r"C:\Users\Dell\Downloads\archive (17)\HousingData.csv")
+data
+X = data[['RM']]
+y = data['MEDV']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+ridge = Ridge(alpha=1.0)
+ridge.fit(X_train, y_train)
+ridge_pred = ridge.predict([[5]])
+
+lasso = Lasso(alpha=0.1)
+lasso.fit(X_train, y_train)
+lasso_pred = lasso.predict([[5]])
+
+print(f"Predicted Price (Ridge) for 5 rooms: {ridge_pred[0]:.2f}")
+print(f"Predicted Price (Lasso) for 5 rooms: {lasso_pred[0]:.2f}")
+
+
+**SLIP 20_2**
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+
+df = pd.DataFrame({
+    'Outlook': ['Sunny','Overcast','Rain','Sunny','Rain'],
+    'Temperature': ['Hot','Mild','Cool','Mild','Hot'],
+    'Humidity': ['High','Normal','High','Normal','High'],
+    'Windy': ['False','True','False','True','False'],
+    'PlayTennis': [0,1,1,1,0]
+})
+
+X = pd.get_dummies(df[['Outlook','Temperature','Humidity','Windy']], drop_first=False)
+y = df['PlayTennis']
+
+feature_names = X.columns
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+model = DecisionTreeClassifier().fit(X_train, y_train)
+
+sample = pd.DataFrame({
+    'Outlook': ['Rain'],
+    'Temperature': ['Mild'],
+    'Humidity': ['Normal'],
+    'Windy': ['False']
+})
+
+sample_encoded = pd.get_dummies(sample, drop_first=False)
+sample_encoded = sample_encoded.reindex(columns=feature_names, fill_value=0)
+pred = model.predict(sample_encoded)[0]
+
+print("Prediction ->", "✅ Play Tennis" if pred else "❌ Don't Play Tennis")
