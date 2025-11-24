@@ -1,0 +1,28 @@
+**SLIP4_1**
+import pandas as pd
+from sklearn.cluster import KMeans
+df = pd.read_csv(r'C:\Users\Dell\Downloads\archive (15)\Mall_Customers.csv')
+df
+x = df[['Annual Income (k$)','Spending Score (1-100)']]
+model = KMeans(n_clusters=5, random_state=0).fit(x)
+df['Cluster'] = model.labels_
+df[['CustomerID','Annual Income (k$)','Spending Score (1-100)','Cluster']]
+
+import matplotlib.pyplot as plt
+plt.scatter(x['Annual Income (k$)'], x['Spending Score (1-100)'], c=df['Cluster'])
+plt.xlabel('Annual Income (k$)')
+plt.ylabel('Spending Score (1-100)')
+plt.show()
+
+
+**SLIP4_2**
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+df = pd.read_csv(r'C:\Users\Dell\Downloads\archive (14)\Housing.csv')
+df
+df = df.dropna()
+df
+x = df[['area']]
+y = df['price']
+model = LinearRegression().fit(x, y)
+print("Predicted Price:", round(model.predict([[2000]])[0], 2))
